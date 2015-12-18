@@ -19,7 +19,7 @@ module MemFs
       end
 
       def find(path)
-        path = path.sub(%r{\A/+}, '')
+        path = path.sub(/\A\/+/, '')
         parts = path.split('/', 2)
 
         if entry_names.include?(path)
@@ -44,10 +44,7 @@ module MemFs
       end
 
       def paths
-        [path] + entries.reject { |p| %w[. ..].include?(p) }
-                        .values
-                        .map(&:paths)
-                        .flatten
+        [path] + entries.reject { |p| %w[. ..].include?(p) }.values.map(&:paths).flatten
       end
 
       def remove_entry(entry)
