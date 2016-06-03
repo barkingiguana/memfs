@@ -22,9 +22,9 @@ module MemFs
       'w+' => CREAT | TRUNC | RDWR,
       'a'  => CREAT | APPEND | WRONLY,
       'a+' => CREAT | APPEND | RDWR
-    }
+    }.freeze
 
-    SEPARATOR = '/'
+    SEPARATOR = '/'.freeze
     SUCCESS = 0
 
     @umask = nil
@@ -106,7 +106,7 @@ module MemFs
     def self.exists?(path)
       !!fs.find(path)
     end
-    class << self; alias_method :exist?, :exists?; end
+    class << self; alias exist? exists?; end
 
     def self.expand_path(file_name, dir_string = fs.pwd)
       original_file_class.expand_path(file_name, dir_string)
@@ -116,10 +116,10 @@ module MemFs
       fs.find!(path) && lstat(path).ftype
     end
 
-    class << self; alias_method :fnmatch?, :fnmatch; end
+    class << self; alias fnmatch? fnmatch; end
 
     def self.identical?(path1, path2)
-      fs.find!(path1).dereferenced === fs.find!(path2).dereferenced
+      fs.find!(path1).dereferenced.eql? fs.find!(path2).dereferenced
     rescue Errno::ENOENT
       false
     end
@@ -186,7 +186,7 @@ module MemFs
 
     def self.size?(path)
       file = fs.find(path)
-      if file && file.size > 0
+      if file && file.size > 0 # rubocop:disable Style/ZeroLengthPredicate
         file.size
       else
         false
@@ -225,7 +225,7 @@ module MemFs
       end
       paths.size
     end
-    class << self; alias_method :delete, :unlink; end
+    class << self; alias delete unlink; end
 
     def self.utime(atime, mtime, *file_names)
       file_names.each do |file_name|
@@ -240,8 +240,8 @@ module MemFs
     def initialize(filename, mode = File::RDONLY, *perm_and_or_opt)
       opt = perm_and_or_opt.last.is_a?(Hash) ? perm_and_or_opt.pop : {}
       perm_and_or_opt.shift
-      if perm_and_or_opt.size > 0
-        fail ArgumentError, 'wrong number of arguments (4 for 1..3)'
+      unless perm_and_or_opt.empty?
+        raise ArgumentError, 'wrong number of arguments (4 for 1..3)'
       end
 
       @path = filename
@@ -296,8 +296,6 @@ module MemFs
       File.truncate(path, integer)
     end
 
-    private
-
     def self.dereference_name(path)
       entry = fs.find(path)
       if entry
@@ -330,13 +328,13 @@ module MemFs
 
     def self.stat_query(path, query, force_boolean = true)
       response = fs.find(path) && stat(path).public_send(query)
-      force_boolean ? !!(response) : response
+      force_boolean ? !!response : response
     end
     private_class_method :stat_query
 
     def self.lstat_query(path, query)
       response = fs.find(path) && lstat(path).public_send(query)
-      !!(response)
+      !!response
     end
     private_class_method :lstat_query
   end

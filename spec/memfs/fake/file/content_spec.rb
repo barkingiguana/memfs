@@ -127,7 +127,7 @@ module MemFs
 
           context 'when the optional +buffer+ argument is provided' do
             it 'inserts the output in the buffer' do
-              string = String.new
+              string = ''
               subject.read(2, string)
               expect(string).to eq('te')
             end

@@ -51,7 +51,7 @@ module MemFs
       end
 
       def find(_path)
-        fail Errno::ENOTDIR, path
+        raise Errno::ENOTDIR, path
       end
 
       def initialize(path = nil)

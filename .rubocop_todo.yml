@@ -1,0 +1,58 @@
+# Offense count: 1
+Lint/HandleExceptions:
+  Exclude:
+    - 'spec/memfs_spec.rb'
+
+# Offense count: 1
+Metrics/AbcSize:
+  Max: 22
+
+# Offense count: 4
+# Configuration parameters: CountComments.
+Metrics/ClassLength:
+  Max: 264
+
+# Offense count: 73
+# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
+# URISchemes: http, https
+
+# Offense count: 4
+# Configuration parameters: CountComments.
+Metrics/MethodLength:
+  Max: 15
+
+# Offense count: 8
+# Configuration parameters: CountComments.
+Metrics/ModuleLength:
+  Max: 2241
+
+# Offense count: 12
+Style/Documentation:
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+    - 'lib/memfs/dir.rb'
+    - 'lib/memfs/fake/directory.rb'
+    - 'lib/memfs/fake/entry.rb'
+    - 'lib/memfs/fake/file.rb'
+    - 'lib/memfs/fake/file/content.rb'
+    - 'lib/memfs/fake/symlink.rb'
+    - 'lib/memfs/file.rb'
+    - 'lib/memfs/file/stat.rb'
+    - 'lib/memfs/file_system.rb'
+    - 'lib/memfs/filesystem_access.rb'
+    - 'lib/memfs/io.rb'
+
+# Offense count: 29
+Style/DoubleNegation:
+  Exclude:
+    - 'lib/memfs/file.rb'
+    - 'lib/memfs/file/stat.rb'
+    - 'lib/memfs/io.rb'
+
+# Offense count: 12
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: use_perl_names, use_english_names
+Style/SpecialGlobalVars:
+  Enabled: false

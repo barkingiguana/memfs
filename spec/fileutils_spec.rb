@@ -76,7 +76,7 @@ describe FileUtils do
     end
 
     it 'returns an array containing the file names' do
-      file_names = %w[/test-file /test-file2]
+      file_names = %w(/test-file /test-file2)
       described_class.touch file_names
       expect(described_class.chmod(0777, file_names)).to eq(file_names)
     end
@@ -296,9 +296,9 @@ describe FileUtils do
 
     context 'when +src+ does not exist' do
       it 'raises an exception' do
-        expect {
+        expect do
           described_class.copy_entry('/test-file', '/test-copy')
-        }.to raise_error(RuntimeError)
+        end.to raise_error(RuntimeError)
       end
     end
 
@@ -380,9 +380,9 @@ describe FileUtils do
 
     context 'when +src+ and +dest+ are the same file' do
       it 'raises an error' do
-        expect {
+        expect do
           described_class.cp('/test-file', '/test-file')
-        }.to raise_error(ArgumentError)
+        end.to raise_error(ArgumentError)
       end
     end
 
@@ -398,9 +398,9 @@ describe FileUtils do
       context 'when +dest+ is not a directory' do
         it 'raises an error' do
           described_class.touch(['/dest', '/test-file2'])
-          expect {
+          expect do
             described_class.cp(['/test-file', '/test-file2'], '/dest')
-          }.to raise_error(Errno::ENOTDIR)
+          end.to raise_error(Errno::ENOTDIR)
         end
       end
     end
@@ -472,9 +472,9 @@ describe FileUtils do
 
     context 'when +src+ and +dest+ are the same file' do
       it 'raises an exception' do
-        expect {
+        expect do
           described_class.install('/test-file', '/test-file')
-        }.to raise_error ArgumentError
+        end.to raise_error ArgumentError
       end
     end
 
@@ -525,9 +525,9 @@ describe FileUtils do
       context 'and it is not a directory' do
         it 'raises an exception' do
           described_class.touch('/test-file2')
-          expect {
+          expect do
             described_class.ln('/test-file', '/test-file2')
-          }.to raise_error(SystemCallError)
+          end.to raise_error(SystemCallError)
         end
 
         context 'and +:force+ is set' do
@@ -550,9 +550,9 @@ describe FileUtils do
       context 'and +destdir+ is not a directory' do
         it 'raises an exception' do
           described_class.touch(['/test-file2', '/not-a-dir'])
-          expect {
+          expect do
             described_class.ln(['/test-file', '/test-file2'], '/not-a-dir')
-          }.to raise_error(Errno::ENOTDIR)
+          end.to raise_error(Errno::ENOTDIR)
         end
       end
     end
@@ -585,9 +585,9 @@ describe FileUtils do
 
       context 'and it is not a directory' do
         it 'raises an exeption' do
-          expect {
+          expect do
             described_class.ln_s('/test-file', '/not-a-dir')
-          }.to raise_error(Errno::EEXIST)
+          end.to raise_error(Errno::EEXIST)
         end
 
         context 'and +:force+ is set' do
@@ -616,9 +616,9 @@ describe FileUtils do
 
       context 'when +destdir+ is not a directory' do
         it 'raises an error' do
-          expect {
+          expect do
             described_class.ln_s(['/test-file', '/test-file2'], '/not-a-dir')
-          }.to raise_error(Errno::ENOTDIR)
+          end.to raise_error(Errno::ENOTDIR)
         end
       end
     end
@@ -871,9 +871,9 @@ describe FileUtils do
     context 'when +:force+ is set' do
       it 'ignores StandardError' do
         described_class.mkdir('/test-dir')
-        expect {
+        expect do
           described_class.rm('/test-dir', force: true)
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
   end
@@ -906,9 +906,9 @@ describe FileUtils do
 
     context 'when +:force+ is set' do
       it 'ignores StandardError' do
-        expect {
+        expect do
           described_class.rm_r(['/no-file'], force: true)
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
   end

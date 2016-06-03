@@ -1,10 +1,12 @@
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 require 'memfs'
 
 RSpec::Core::RakeTask.new(:spec)
+RuboCop::RakeTask.new(:rubocop)
 
-task default: :spec
+task default: [:spec, :rubocop]
 
 desc 'Compares a MemFs class to the original Ruby one ' \
      '(set CLASS to the compared class)'

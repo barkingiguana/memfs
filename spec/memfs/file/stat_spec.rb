@@ -28,9 +28,9 @@ module MemFs
       context 'when optional dereference argument is set to true' do
         context 'when the last target of the link chain does not exist' do
           it 'raises an exception' do
-            expect {
+            expect do
               described_class.new('/test-no-file-link', true)
-            }.to raise_error(Errno::ENOENT)
+            end.to raise_error(Errno::ENOENT)
           end
         end
       end

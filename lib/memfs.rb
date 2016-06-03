@@ -107,7 +107,7 @@ module MemFs
   # @return nothing.
   def touch(*paths)
     if ::File != MemFs::File
-      fail 'Always call MemFs.touch inside a MemFs active context.'
+      raise 'Always call MemFs.touch inside a MemFs active context.'
     end
 
     paths.each do |path|

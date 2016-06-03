@@ -11,7 +11,7 @@ module MemFs
       end
 
       def empty?
-        (entries.keys - %w[. ..]).empty?
+        (entries.keys - %w(. ..)).empty?
       end
 
       def entry_names
@@ -44,10 +44,10 @@ module MemFs
       end
 
       def paths
-        [path] + entries.reject { |p| %w[. ..].include?(p) }
-                        .values
-                        .map(&:paths)
-                        .flatten
+        [path] + entries.reject { |p| %w(. ..).include?(p) }
+                 .values
+                 .map(&:paths)
+                 .flatten
       end
 
       def remove_entry(entry)

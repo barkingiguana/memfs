@@ -46,7 +46,7 @@ module MemFs
             directory.add_entry described_class.new("dir#{n}")
           end
 
-          expect(directory.entry_names).to eq(%w[. .. dir0 dir1 dir2])
+          expect(directory.entry_names).to eq(%w(. .. dir0 dir1 dir2))
         end
       end
 
@@ -111,7 +111,7 @@ module MemFs
 
         it 'returns the path of the directory and its entries recursively' do
           expect(directory.paths).to eq \
-            %w[test test/subdir test/subdir/file1 test/subdir/file2]
+            %w(test test/subdir test/subdir/file1 test/subdir/file2)
         end
       end
 

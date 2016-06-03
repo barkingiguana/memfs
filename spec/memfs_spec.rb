@@ -15,7 +15,7 @@ describe MemFs do
 
     it 'deactivates MemFs even when an exception occurs' do
       begin
-        described_class.activate { fail 'Some error' }
+        described_class.activate { raise 'Some error' }
       rescue
       end
       expect(::Dir).to be(described_class::OriginalDir)

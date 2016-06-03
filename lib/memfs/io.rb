@@ -28,13 +28,13 @@ module MemFs
 
         offset = 0 if offset.nil?
         unless offset.respond_to?(:to_int)
-          fail TypeError, "no implicit conversion from #{offset.class}"
+          raise TypeError, "no implicit conversion from #{offset.class}"
         end
         offset = offset.to_int
 
         if offset > 0
-          fail NotImplementedError,
-               'MemFs::IO.write with offset not yet supported.'
+          raise NotImplementedError,
+                'MemFs::IO.write with offset not yet supported.'
         end
 
         file = open(path, *open_args)
@@ -50,7 +50,7 @@ module MemFs
                   :close_on_exec
 
       def <<(object)
-        fail IOError, 'not opened for writing' unless writable?
+        raise IOError, 'not opened for writing' unless writable?
 
         content << object.to_s
       end
@@ -65,7 +65,7 @@ module MemFs
           :willneed
         ]
         unless advice_types.include?(advice_type)
-          fail NotImplementedError, "Unsupported advice: #{advice_type.inspect}"
+          raise NotImplementedError, "Unsupported advice: #{advice_type.inspect}"
         end
         nil
       end
@@ -99,7 +99,7 @@ module MemFs
       def eof?
         pos >= content.size
       end
-      alias_method :eof, :eof?
+      alias eof eof?
 
       def external_encoding
         if writable?
@@ -109,28 +109,28 @@ module MemFs
         end
       end
 
-      def each(sep = $/, &block)
+      def each(sep = $/)
         return to_enum(__callee__) unless block_given?
-        fail IOError, 'not opened for reading' unless readable?
-        content.each_line(sep) { |line| block.call(line) }
+        raise IOError, 'not opened for reading' unless readable?
+        content.each_line(sep) { |line| yield(line) }
         self
       end
 
-      def each_byte(&block)
+      def each_byte
         return to_enum(__callee__) unless block_given?
-        fail IOError, 'not opened for reading' unless readable?
-        content.each_byte { |byte| block.call(byte) }
+        raise IOError, 'not opened for reading' unless readable?
+        content.each_byte { |byte| yield(byte) }
         self
       end
-      alias_method :bytes, :each_byte
+      alias bytes each_byte
 
-      def each_char(&block)
+      def each_char
         return to_enum(__callee__) unless block_given?
-        fail IOError, 'not opened for reading' unless readable?
-        content.each_char { |char| block.call(char) }
+        raise IOError, 'not opened for reading' unless readable?
+        content.each_char { |char| yield(char) }
         self
       end
-      alias_method :chars, :each_char
+      alias chars each_char
 
       def pos
         entry.pos
@@ -147,15 +147,13 @@ module MemFs
       end
 
       def puts(text)
-        fail IOError, 'not opened for writing' unless writable?
+        raise IOError, 'not opened for writing' unless writable?
 
         content.puts text
       end
 
       def read(length = nil, buffer = '')
-        unless entry
-          fail(Errno::ENOENT, path)
-        end
+        raise(Errno::ENOENT, path) unless entry
         default = length ? nil : ''
         content.read(length, buffer) || default
       end
@@ -167,7 +165,7 @@ module MemFs
                   when ::IO::SEEK_SET then amount
                   end
 
-        fail Errno::EINVAL, path if new_pos.nil? || new_pos < 0
+        raise Errno::EINVAL, path if new_pos.nil? || new_pos < 0
 
         entry.pos = new_pos
         0
@@ -178,7 +176,7 @@ module MemFs
       end
 
       def write(string)
-        fail IOError, 'not opened for writing' unless writable?
+        raise IOError, 'not opened for writing' unless writable?
 
         content.write(string.to_s)
       end
@@ -208,7 +206,7 @@ module MemFs
         return mode unless mode.is_a?(String)
 
         unless mode =~ /\A([rwa]\+?)([bt])?(:bom)?(\|.+)?\z/
-          fail ArgumentError, "invalid access mode #{mode}"
+          raise ArgumentError, "invalid access mode #{mode}"
         end
 
         mode_str = $~[1]

@@ -61,9 +61,9 @@ module MemFs
         context "when the symlink's target does not exist" do
           it 'raises an exception' do
             symlink = described_class.new('/test-link', '/no-file')
-            expect {
+            expect do
               symlink.dereferenced_path
-            }.to raise_error Errno::ENOENT
+            end.to raise_error Errno::ENOENT
           end
         end
       end

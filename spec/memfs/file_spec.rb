@@ -193,27 +193,27 @@ module MemFs
       end
 
       it 'ignores nil user id' do
-        expect {
+        expect do
           described_class.chown nil, 42, '/test-file'
-        }.to_not change { described_class.stat('/test-file').uid }
+        end.to_not change { described_class.stat('/test-file').uid }
       end
 
       it 'ignores nil group id' do
-        expect {
+        expect do
           described_class.chown 42, nil, '/test-file'
-        }.to_not change { described_class.stat('/test-file').gid }
+        end.to_not change { described_class.stat('/test-file').gid }
       end
 
       it 'ignores -1 user id' do
-        expect {
+        expect do
           described_class.chown(-1, 42, '/test-file')
-        }.to_not change { described_class.stat('/test-file').uid }
+        end.to_not change { described_class.stat('/test-file').uid }
       end
 
       it 'ignores -1 group id' do
-        expect {
+        expect do
           described_class.chown 42, -1, '/test-file'
-        }.to_not change { described_class.stat('/test-file').gid }
+        end.to_not change { described_class.stat('/test-file').gid }
       end
 
       context 'when the named entry is a symlink' do
@@ -758,9 +758,9 @@ module MemFs
 
       context 'when +old_name+ does not exist' do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.link '/no-file', '/nowhere'
-          }.to raise_error Errno::ENOENT
+          end.to raise_error Errno::ENOENT
         end
       end
 
@@ -768,9 +768,9 @@ module MemFs
         it 'raises an exception' do
           described_class.open('/test-file2', 'w') { |f| f.puts 'test2' }
 
-          expect {
+          expect do
             described_class.link '/test-file', '/test-file2'
-          }.to raise_error SystemCallError
+          end.to raise_error SystemCallError
         end
       end
     end
@@ -795,9 +795,9 @@ module MemFs
 
         context 'and its target does not exist' do
           it 'ignores errors' do
-            expect {
+            expect do
               described_class.lstat('/no-link')
-            }.not_to raise_error
+            end.not_to raise_error
           end
         end
       end
@@ -894,9 +894,9 @@ module MemFs
 
       context 'when too many arguments are given' do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.new(1, 2, 3, 4)
-          }.to raise_error(ArgumentError)
+          end.to raise_error(ArgumentError)
         end
       end
     end
@@ -988,9 +988,9 @@ module MemFs
         end
 
         it 'raises an error if offset is negative' do
-          expect {
+          expect do
             described_class.read '/test-file', 2, -1
-          }.to raise_error Errno::EINVAL
+          end.to raise_error Errno::EINVAL
         end
       end
 
@@ -1225,9 +1225,9 @@ module MemFs
 
       context 'when a middle part of the given path does not exist' do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.realdirpath '/no-dir/test-file'
-          }.to raise_error Errno::ENOENT
+          end.to raise_error Errno::ENOENT
         end
       end
     end
@@ -1289,9 +1289,9 @@ module MemFs
 
       context 'when a part of the given path does not exist' do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.realpath '/no-dir/test-file'
-          }.to raise_error Errno::ENOENT
+          end.to raise_error Errno::ENOENT
         end
       end
     end
@@ -1435,18 +1435,18 @@ module MemFs
 
       context 'when the named file does not exist' do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.stat('/no-file')
-          }.to raise_error Errno::ENOENT
+          end.to raise_error Errno::ENOENT
         end
       end
 
       context 'when the named file is a symlink' do
         context 'and its target does not exist' do
           it 'raises an exception' do
-            expect {
+            expect do
               described_class.stat('/no-link')
-            }.to raise_error Errno::ENOENT
+            end.to raise_error Errno::ENOENT
           end
         end
       end
@@ -1552,17 +1552,17 @@ module MemFs
 
       context 'when the named file does not exist' do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.truncate '/no-file', 5
-          }.to raise_error Errno::ENOENT
+          end.to raise_error Errno::ENOENT
         end
       end
 
       context 'when the given size is negative' do
         it 'it raises an exception' do
-          expect {
+          expect do
             described_class.truncate '/test-file', -1
-          }.to raise_error TypeError
+          end.to raise_error TypeError
         end
       end
     end
@@ -1611,9 +1611,9 @@ module MemFs
 
       context 'when the entry is a directory' do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.unlink '/test-dir'
-          }.to raise_error Errno::EPERM
+          end.to raise_error Errno::EPERM
         end
       end
     end
@@ -1641,9 +1641,9 @@ module MemFs
       end
 
       it 'raises en error if the entry does not exist' do
-        expect {
+        expect do
           described_class.utime time, time, '/no-file'
-        }.to raise_error Errno::ENOENT
+        end.to raise_error Errno::ENOENT
       end
     end
 
@@ -1848,21 +1848,21 @@ module MemFs
         end
 
         it 'raises an error if offset is negative' do
-          expect {
+          expect do
             described_class.write('/test-file', 'foo', -1)
-          }.to raise_error Errno::EINVAL
+          end.to raise_error Errno::EINVAL
         end
 
         it 'raises an error if offset is a boolean' do
-          expect {
+          expect do
             described_class.write '/test-file', 'foo', false
-          }.to raise_error TypeError
+          end.to raise_error TypeError
         end
 
         it 'raises an error if offset is a string' do
-          expect {
+          expect do
             described_class.write '/test-file', 'foo', 'offset'
-          }.to raise_error TypeError
+          end.to raise_error TypeError
         end
       end
     end
@@ -2074,27 +2074,27 @@ module MemFs
       end
 
       it 'ignores nil user id' do
-        expect {
+        expect do
           subject.chown nil, 42
-        }.to_not change { subject.stat.uid }
+        end.to_not change { subject.stat.uid }
       end
 
       it 'ignores nil group id' do
-        expect {
+        expect do
           subject.chown 42, nil
-        }.to_not change { subject.stat.gid }
+        end.to_not change { subject.stat.gid }
       end
 
       it 'ignores -1 user id' do
-        expect {
+        expect do
           subject.chown(-1, 42)
-        }.to_not change { subject.stat.uid }
+        end.to_not change { subject.stat.uid }
       end
 
       it 'ignores -1 group id' do
-        expect {
+        expect do
           subject.chown 42, -1
-        }.to_not change { subject.stat.gid }
+        end.to_not change { subject.stat.gid }
       end
 
       context 'when the named entry is a symlink' do
@@ -2212,9 +2212,9 @@ module MemFs
 
       context 'when the file is not open for reading' do
         it 'raises an exception' do
-          expect {
+          expect do
             write_subject.each { |l| puts l }
-          }.to raise_error IOError
+          end.to raise_error IOError
         end
 
         context 'when no block is given' do
@@ -2237,9 +2237,9 @@ module MemFs
       end
 
       it 'calls the given block once for each byte of the file' do
-        expect { |blk|
+        expect do |blk|
           subject.each_byte(&blk)
-        }.to yield_successive_args 116, 101, 115, 116
+        end.to yield_successive_args 116, 101, 115, 116
       end
 
       it 'returns the file itself' do
@@ -2249,9 +2249,9 @@ module MemFs
 
       context 'when the file is not open for reading' do
         it 'raises an exception' do
-          expect {
-            write_subject.each_byte { |b| }
-          }.to raise_error IOError
+          expect do
+            write_subject.each_byte { |_b| }
+          end.to raise_error IOError
         end
 
         context 'when no block is given' do
@@ -2274,9 +2274,9 @@ module MemFs
       end
 
       it 'calls the given block once for each byte of the file' do
-        expect { |blk|
+        expect do |blk|
           subject.each_char(&blk)
-        }.to yield_successive_args 't', 'e', 's', 't'
+        end.to yield_successive_args 't', 'e', 's', 't'
       end
 
       it 'returns the file itself' do
@@ -2286,9 +2286,9 @@ module MemFs
 
       context 'when the file is not open for reading' do
         it 'raises an exception' do
-          expect {
-            write_subject.each_char { |b| }
-          }.to raise_error IOError
+          expect do
+            write_subject.each_char { |_b| }
+          end.to raise_error IOError
         end
 
         context 'when no block is given' do
@@ -2626,7 +2626,7 @@ module MemFs
 
       context 'when a buffer is given' do
         it 'fills the buffer with the read content' do
-          buffer = String.new
+          buffer = ''
           subject.read 2, buffer
 
           expect(buffer).to eq random_string[0, 2]

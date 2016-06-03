@@ -34,9 +34,9 @@ module MemFs
 
         it 'gets back to previous directory once the block is finished' do
           subject.chdir '/'
-          expect {
+          expect do
             subject.chdir('/test-dir') {}
-          }.to_not change { subject.getwd }
+          end.to_not change { subject.getwd }
         end
       end
 
@@ -82,27 +82,27 @@ module MemFs
       end
 
       it 'ignores nil user id' do
-        expect {
+        expect do
           subject.chown(nil, 42, '/test-file')
-        }.to_not change { subject.find!('/test-file').uid }
+        end.to_not change { subject.find!('/test-file').uid }
       end
 
       it 'ignores nil group id' do
-        expect {
+        expect do
           subject.chown(42, nil, '/test-file')
-        }.to_not change { subject.find!('/test-file').gid }
+        end.to_not change { subject.find!('/test-file').gid }
       end
 
       it 'ignores -1 user id' do
-        expect {
+        expect do
           subject.chown(-1, 42, '/test-file')
-        }.to_not change { subject.find!('/test-file').uid }
+        end.to_not change { subject.find!('/test-file').uid }
       end
 
       it 'ignores -1 group id' do
-        expect {
+        expect do
           subject.chown(42, -1, '/test-file')
-        }.to_not change { subject.find!('/test-file').gid }
+        end.to_not change { subject.find!('/test-file').gid }
       end
 
       context 'when the named entry is a symlink' do
@@ -135,7 +135,7 @@ module MemFs
     describe '#clear!' do
       it 'clear the registred entries' do
         subject.clear!
-        expect(subject.root.entry_names).to eq(%w[. .. tmp])
+        expect(subject.root.entry_names).to eq(%w(. .. tmp))
       end
 
       it 'sets the current directory to /' do
@@ -146,9 +146,9 @@ module MemFs
 
     describe '#entries' do
       it 'returns an array containing all of the filenames in the given directory' do
-        %w[/test-dir/new-dir /test-dir/new-dir2].each { |dir| subject.mkdir dir }
+        %w(/test-dir/new-dir /test-dir/new-dir2).each { |dir| subject.mkdir dir }
         subject.touch '/test-dir/test-file', '/test-dir/test-file2'
-        expect(subject.entries('/test-dir')).to eq(%w[. .. new-dir new-dir2 test-file test-file2])
+        expect(subject.entries('/test-dir')).to eq(%w(. .. new-dir new-dir2 test-file test-file2))
       end
     end
 
@@ -219,9 +219,9 @@ module MemFs
 
         context "and the symlink's target does not exist" do
           it 'raises an exception' do
-            expect {
+            expect do
               subject.find!('/test-no-link/test-file')
-            }.to raise_error Errno::ENOENT
+            end.to raise_error Errno::ENOENT
           end
         end
       end
@@ -330,7 +330,7 @@ module MemFs
 
       it 'returns the list of all the existing paths' do
         expect(subject.paths).to eq \
-          %w[/ /tmp /test-dir /test-dir/subdir /test-dir/subdir/file1 /test-dir/subdir/file2]
+          %w(/ /tmp /test-dir /test-dir/subdir /test-dir/subdir/file1 /test-dir/subdir/file2)
       end
     end
 

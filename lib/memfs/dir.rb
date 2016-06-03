@@ -18,7 +18,7 @@ module MemFs
     end
 
     def self.chroot(path)
-      fail Errno::EPERM, path unless Process.uid.zero?
+      raise Errno::EPERM, path unless Process.uid.zero?
 
       dir = fs.find_directory!(path)
       dir.name = '/'
@@ -33,7 +33,7 @@ module MemFs
     def self.exists?(path)
       File.directory?(path)
     end
-    class << self; alias_method :exist?, :exists?; end
+    class << self; alias exist? exists?; end
 
     def self.foreach(dirname, &block)
       return to_enum(__callee__, dirname) unless block
@@ -44,7 +44,7 @@ module MemFs
     def self.getwd
       fs.getwd
     end
-    class << self; alias_method :pwd, :getwd; end
+    class << self; alias pwd getwd; end
 
     def self.glob(patterns, flags = 0)
       patterns = [*patterns]
@@ -89,8 +89,8 @@ module MemFs
     end
 
     class << self
-      alias_method :delete, :rmdir
-      alias_method :unlink, :rmdir
+      alias delete rmdir
+      alias unlink rmdir
     end
 
     def initialize(path)
@@ -101,7 +101,7 @@ module MemFs
     end
 
     def close
-      fail IOError, 'closed directory' if state == :closed
+      raise IOError, 'closed directory' if state == :closed
       self.state = :closed
     end
 
@@ -113,7 +113,7 @@ module MemFs
     def path
       entry.path
     end
-    alias_method :to_path, :path
+    alias to_path path
 
     def pos=(position)
       seek(position)
@@ -143,11 +143,11 @@ module MemFs
 
     private
 
-    if defined?(File::FNM_EXTGLOB)
-      GLOB_FLAGS = File::FNM_EXTGLOB | File::FNM_PATHNAME
-    else
-      GLOB_FLAGS = File::FNM_PATHNAME
-    end
+    GLOB_FLAGS = if defined?(File::FNM_EXTGLOB)
+                   File::FNM_EXTGLOB | File::FNM_PATHNAME
+                 else
+                   File::FNM_PATHNAME
+                 end
 
     attr_accessor :entry, :max_seek, :state
 

@@ -21,7 +21,7 @@ module MemFs
       previous_directory = working_directory
       self.working_directory = destination
 
-      block.call if block
+      yield if block
     ensure
       self.working_directory = previous_directory if block
     end
@@ -61,13 +61,13 @@ module MemFs
     end
 
     def find!(path)
-      find(path) || fail(Errno::ENOENT, path)
+      find(path) || raise(Errno::ENOENT, path)
     end
 
     def find_directory!(path)
       entry = find!(path).dereferenced
 
-      fail Errno::ENOTDIR, path unless entry.is_a?(Fake::Directory)
+      raise Errno::ENOTDIR, path unless entry.is_a?(Fake::Directory)
 
       entry
     end
@@ -80,7 +80,7 @@ module MemFs
     def getwd
       working_directory.path
     end
-    alias_method :pwd, :getwd
+    alias pwd getwd
 
     def initialize
       clear!
@@ -89,7 +89,7 @@ module MemFs
     def link(old_name, new_name)
       file = find!(old_name)
 
-      fail Errno::EEXIST, "(#{old_name}, #{new_name})" if find(new_name)
+      raise Errno::EEXIST, "(#{old_name}, #{new_name})" if find(new_name)
 
       link = file.dup
       link.name = basename(new_name)
@@ -97,7 +97,7 @@ module MemFs
     end
 
     def mkdir(path, mode = 0777)
-      fail Errno::EEXIST, path if find(path)
+      raise Errno::EEXIST, path if find(path)
       directory = Fake::Directory.new(path)
       directory.mode = mode
       find_parent!(path).add_entry directory
@@ -118,13 +118,13 @@ module MemFs
     def rmdir(path)
       directory = find!(path)
 
-      fail Errno::ENOTEMPTY, path unless directory.empty?
+      raise Errno::ENOTEMPTY, path unless directory.empty?
 
       directory.delete
     end
 
     def symlink(old_name, new_name)
-      fail Errno::EEXIST, new_name if find(new_name)
+      raise Errno::EEXIST, new_name if find(new_name)
 
       find_parent!(new_name).add_entry Fake::Symlink.new(new_name, old_name)
     end
@@ -146,7 +146,7 @@ module MemFs
     def unlink(path)
       entry = find!(path)
 
-      fail Errno::EPERM, path if entry.is_a?(Fake::Directory)
+      raise Errno::EPERM, path if entry.is_a?(Fake::Directory)
 
       entry.delete
     end

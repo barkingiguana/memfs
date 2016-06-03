@@ -13,13 +13,13 @@ module MemFs
     describe '[]' do
       context 'when a string is given' do
         it 'acts like calling glob' do
-          expect(described_class['/*']).to eq %w[/tmp /test]
+          expect(described_class['/*']).to eq %w(/tmp /test)
         end
       end
 
       context 'when a list of strings is given' do
         it 'acts like calling glob' do
-          expect(described_class['/tm*', '/te*']).to eq %w[/tmp /test]
+          expect(described_class['/tm*', '/te*']).to eq %w(/tmp /test)
         end
       end
     end
@@ -47,9 +47,9 @@ module MemFs
 
         it 'gets back to previous directory once the block is finished' do
           described_class.chdir '/'
-          expect {
+          expect do
             described_class.chdir('/test') {}
-          }.to_not change { described_class.pwd }
+          end.to_not change { described_class.pwd }
         end
       end
     end
@@ -98,9 +98,9 @@ module MemFs
 
     describe '.entries' do
       it 'returns an array containing all of the filenames in the given directory' do
-        %w[/test/dir1 /test/dir2].each { |dir| described_class.mkdir dir }
+        %w(/test/dir1 /test/dir2).each { |dir| described_class.mkdir dir }
         _fs.touch '/test/file1', '/test/file2'
-        expect(described_class.entries('/test')).to eq(%w[. .. dir1 dir2 file1 file2])
+        expect(described_class.entries('/test')).to eq(%w(. .. dir1 dir2 file1 file2))
       end
     end
 
@@ -132,30 +132,30 @@ module MemFs
 
       context 'when a block is given' do
         it 'calls the block once for each entry in the named directory' do
-          expect { |blk|
+          expect do |blk|
             described_class.foreach('/test', &blk)
-          }.to yield_control.exactly(4).times
+          end.to yield_control.exactly(4).times
         end
 
         it 'passes each entry as a parameter to the block' do
-          expect { |blk|
+          expect do |blk|
             described_class.foreach('/test', &blk)
-          }.to yield_successive_args('.', '..', 'test-file', 'test-file2')
+          end.to yield_successive_args('.', '..', 'test-file', 'test-file2')
         end
 
         context "and the directory doesn't exist" do
           it 'raises an exception' do
-            expect {
+            expect do
               described_class.foreach('/no-dir') {}
-            }.to raise_error Errno::ENOENT
+            end.to raise_error Errno::ENOENT
           end
         end
 
         context 'and the given path is not a directory' do
           it 'raises an exception' do
-            expect {
+            expect do
               described_class.foreach('/test/test-file') {}
-            }.to raise_error Errno::ENOTDIR
+            end.to raise_error Errno::ENOTDIR
           end
         end
       end
@@ -206,25 +206,25 @@ module MemFs
         end
       end
 
-      it_behaves_like 'returning matching filenames', '/', %w[/]
-      it_behaves_like 'returning matching filenames', '/test0', %w[/test0]
-      it_behaves_like 'returning matching filenames', '/*', %w[/tmp /test0 /test1 /test2]
-      it_behaves_like 'returning matching filenames', '/test*', %w[/test0 /test1 /test2]
-      it_behaves_like 'returning matching filenames', '/*0', %w[/test0]
-      it_behaves_like 'returning matching filenames', '/*es*', %w[/test0 /test1 /test2]
-      it_behaves_like 'returning matching filenames', '/**/file0', %w[/test0/subdir/file0 /test1/subdir/file0 /test2/subdir/file0]
-      it_behaves_like 'returning matching filenames', '/test?', %w[/test0 /test1 /test2]
-      it_behaves_like 'returning matching filenames', '/test[01]', %w[/test0 /test1]
-      it_behaves_like 'returning matching filenames', '/test[^2]', %w[/test0 /test1]
+      it_behaves_like 'returning matching filenames', '/', %w(/)
+      it_behaves_like 'returning matching filenames', '/test0', %w(/test0)
+      it_behaves_like 'returning matching filenames', '/*', %w(/tmp /test0 /test1 /test2)
+      it_behaves_like 'returning matching filenames', '/test*', %w(/test0 /test1 /test2)
+      it_behaves_like 'returning matching filenames', '/*0', %w(/test0)
+      it_behaves_like 'returning matching filenames', '/*es*', %w(/test0 /test1 /test2)
+      it_behaves_like 'returning matching filenames', '/**/file0', %w(/test0/subdir/file0 /test1/subdir/file0 /test2/subdir/file0)
+      it_behaves_like 'returning matching filenames', '/test?', %w(/test0 /test1 /test2)
+      it_behaves_like 'returning matching filenames', '/test[01]', %w(/test0 /test1)
+      it_behaves_like 'returning matching filenames', '/test[^2]', %w(/test0 /test1)
 
       if defined?(File::FNM_EXTGLOB)
-        it_behaves_like 'returning matching filenames', '/test{1,2}', %w[/test1 /test2]
+        it_behaves_like 'returning matching filenames', '/test{1,2}', %w(/test1 /test2)
       end
 
       context 'when a flag is given' do
         it 'uses it to compare filenames' do
           expect(described_class.glob('/TEST*', File::FNM_CASEFOLD)).to eq \
-            %w[/test0 /test1 /test2]
+            %w(/test0 /test1 /test2)
         end
       end
 
@@ -241,7 +241,7 @@ module MemFs
 
       context 'when pattern is an array of patterns' do
         it 'returns the list of files matching any pattern' do
-          expect(described_class.glob(['/*0', '/*1'])).to eq %w[/test0 /test1]
+          expect(described_class.glob(['/*0', '/*1'])).to eq %w(/test0 /test1)
         end
       end
     end
@@ -309,9 +309,9 @@ module MemFs
 
       context "when the given directory doesn't exist" do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.open('/no-dir')
-          }.to raise_error Errno::ENOENT
+          end.to raise_error Errno::ENOENT
         end
       end
 
@@ -319,9 +319,9 @@ module MemFs
         before { _fs.touch('/test/test-file') }
 
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.open('/test/test-file')
-          }.to raise_error Errno::ENOTDIR
+          end.to raise_error Errno::ENOTDIR
         end
       end
     end
@@ -329,9 +329,9 @@ module MemFs
     describe '.new' do
       context "when the given directory doesn't exist" do
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.new('/no-dir')
-          }.to raise_error Errno::ENOENT
+          end.to raise_error Errno::ENOENT
         end
       end
 
@@ -339,9 +339,9 @@ module MemFs
         before { _fs.touch('/test/test-file') }
 
         it 'raises an exception' do
-          expect {
+          expect do
             described_class.new('/test/test-file')
-          }.to raise_error Errno::ENOTDIR
+          end.to raise_error Errno::ENOTDIR
         end
       end
     end
@@ -394,9 +394,9 @@ module MemFs
       end
 
       it 'passes the filename of each entry as a parameter to the block' do
-        expect { |blk|
+        expect do |blk|
           subject.each(&blk)
-        }.to yield_successive_args('.', '..', 'test-file', 'test-file2')
+        end.to yield_successive_args('.', '..', 'test-file', 'test-file2')
       end
 
       context 'when no block is given' do
